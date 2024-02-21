@@ -1,6 +1,10 @@
-/* 
+/*                                       Embedded Input Sequence by Alexander "maylizbeth" Gilbertson / B512325
+ *                                        
+ *                                    More information can be found in the GitHub. PROVIDED UNDER THE MIT LICENSE
+ *                                                  https://github.com/neopolitans/EmbeddedInputSequence     
+ *                                                  
  *------------------------------------------------------------------------------------------------------------------------------------------------------------
- *                                                     INPUT SEQUENCE MODULE for EmbeddedInputModule
+ *                                                         INPUT SEQUENCE MODULE for UNITY ENGINE
  *------------------------------------------------------------------------------------------------------------------------------------------------------------
  *
  *  An Optional Module which enables developers to create (and track) input sequences for events, behaviours and other invocable concepts/classes. This
@@ -9,13 +13,13 @@
  *  EmbeddedInputModule for a preferred input handler (e.g. Rewired, Unity.Input, InputSystem 1.7.0).
  *
  *
- *                          THIS OPTIONAL MODULE REQUIRES EmbeddedInputModule AND UnityEngine.InputSystem package to work!
+ *                         OPTIONAL FEATURES OF THIS MODULE REQUIRE EmbeddedInputModule AND UnityEngine.InputSystem package to work!
  *                                    More information can be found in the GitHub. PROVIDED UNDER THE MIT LICENSE
  *                                                  https://github.com/neopolitans/EmbeddedInputModule
  */
 
 //------------------------------------------------------------------------------------------------------------------------------------------------------------
-//                                            EMBEDDED INPUT MODULE - OPTIONAL MODULE "INPUTSEQUENCE" | SETTINGS
+//                                                                 INPUT SEQUENCE | SETTINGS
 //------------------------------------------------------------------------------------------------------------------------------------------------------------
 
   #define EIM_OPTMOD_InputSequence_DisableDebugMessages                       // Disables debug messages for Successful Inputs, Unsuccessful Inputs,
@@ -50,7 +54,7 @@ using GamepadControl = EmbeddedInputModule.GamepadControl;
 public abstract class AbstractInputSequence
 {
     /// <summary>
-    /// The values which check if each input of each sequence is successful.
+    /// The boolean values that are set as inputs are read sequentially. 
     /// </summary>
     public bool[] successfulInputs;
 
@@ -67,12 +71,12 @@ public abstract class AbstractInputSequence
     public bool autoResetSequence = true;
 
     /// <summary>
-    /// The current sequence input being queued.
+    /// The current input as an index value that the sequence is listening for.
     /// </summary>
     public int current = 0;
 
     /// <summary>
-    /// Get whether the last input resulted in a true value.
+    /// Was the last input in the sequence successfully detected?
     /// </summary>
     public bool lastInputSuccessful
     {
@@ -85,8 +89,8 @@ public abstract class AbstractInputSequence
 
     // Methods
     /// <summary>
-    /// Update the sequence. <br/>
-    /// Checks the pending input value in the sequence against the current input(s) this frame.
+    /// Update the sequence by listening to the player’s input. <br/>
+    /// If the next input in the sequence is detected, the input after becomes the next input.
     /// </summary>
     public abstract void UpdateSequence();
 
@@ -103,13 +107,13 @@ public abstract class AbstractInputSequence
 
     /// <summary>
     /// Reset the sequence. <br/>
-    /// Also resets each element in a sequence array.
+    /// This will reset all values in the Successful Inputs array.
     /// </summary>
     public abstract void ResetSequence();
 
     // Custom Operators
     /// <summary>
-    /// Indexer which reads successfulInputs.
+    /// Indexer that reads the corresponding value from the Successful Inputs array.
     /// </summary>
     /// <param name="i"></param>
     /// <returns></returns>
@@ -120,14 +124,14 @@ public abstract class AbstractInputSequence
     }
 
     /// <summary>
-    /// Custom True-Operator to navigate through all of the input sequence and determine if all inputs have been successful.
+    /// A custom true operator that returns if <see cref="sequenceComplete"/> is true.
     /// </summary>
     /// <param name="inputSeq">The Input Sequence to Navigate.</param>z
     /// <returns></returns>
     public static bool operator true(AbstractInputSequence inputSeq) => inputSeq.sequenceComplete;
 
     /// <summary>
-    /// Custom False-Operator to navigate through all of the input sequence and determine if any input has been unsuccessful.
+    /// A custom false operator that returns if <see cref="sequenceComplete"/> is false.
     /// </summary>
     /// <param name="inputSeq">The Input Sequence to Navigate.</param>
     /// <returns></returns
@@ -161,8 +165,9 @@ public abstract class AbstractSequenceSet
     // Methods
 
     /// <summary>
-    /// Update all sequences in the set. <br/>
-    /// Checks if any sequence has had a successful input and if so, checks
+    /// Update all sequences in the set. <br/><br/>
+    /// If the next input in a sequence is detected, the input after becomes the next input. <br/>
+    /// Sequences may reset if Auto Reset Sequence is enabled per sequence.
     /// </summary>
     public virtual void UpdateSequence()
     {
@@ -264,8 +269,7 @@ public class InputSequence<T>
     : AbstractInputSequence where T : Enum
 {
     /// <summary>
-    /// The sequence of controls required to trigger the behaviour. <br/>
-    /// This requires whichever enum being represented to be a 
+    /// The array of controls to be correctly pressed or detected in sequential order.
     /// </summary>
     public T[] sequence;
 
