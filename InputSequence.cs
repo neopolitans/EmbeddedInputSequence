@@ -100,7 +100,7 @@ public abstract class AbstractInputSequence
     public virtual void SetAsComplete()
     {
         sequenceComplete = true;
-        #if !EIM_OptionalModule_InputSequence_DisableDebugMessages
+        #if !EIM_OPTMOD_InputSequence_DisableDebugMessages
         Debug.Log("Sequence Complete!");
         #endif
     }
@@ -176,8 +176,6 @@ public abstract class AbstractSequenceSet
         bool anySuccessfulInputOrIdle = false;
         bool anySequenceComplete = false;
 
-        Debug.Log(sequences.Length);
-
         for (int i = 0; i < sequences.Length; i++)
         {
             // Cache the current value for each sequence.
@@ -226,7 +224,7 @@ public abstract class AbstractSequenceSet
         }
 
         sequenceComplete = true;
-        #if !EIM_OptionalModule_InputSequence_DisableDebugMessages
+        #if !EIM_OPTMOD_InputSequence_DisableDebugMessages
         Debug.Log("Sequence Complete!");
         #endif
     }
@@ -280,7 +278,7 @@ public class InputSequence<T>
         current = 0;
         sequenceComplete = false;
 
-        // As successfulInptus is *always* created within the constructor, this is 
+        // As successfulInputs is *always* created within the constructor, this should never be zero.
         if (sequence.Length > 0)
         {
             for (int i = 0; i < sequence.Length; i++)
@@ -430,7 +428,7 @@ public class KeyboardSequence
                 // more efficient checks can be applied and extended checks can be added via preprocessor directives.
                 if (Input.anyKeyDown)
                 {
-                    #if !EIM_OptionalModule_InputSequence_DisableDebugMessages
+                    #if !EIM_OPTMOD_InputSequence_DisableDebugMessages
                     Debug.Log($"Last Input {sequence[current]} unsuccessful!\nSequence Reset!");
                     #endif
                     ResetSequence();
